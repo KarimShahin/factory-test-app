@@ -1,0 +1,421 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "factory/01-business.full.schema.json",
+  "title": "01-business handoff (full)",
+  "type": "object",
+  "properties": {
+    "phase": {
+      "const": "01-business"
+    },
+    "kind": {
+      "const": "full"
+    },
+    "increment": {
+      "type": "string"
+    },
+    "product_version": {
+      "type": "string"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "provenance": {
+      "enum": [
+        "produced",
+        "reconstructed",
+        "reconciled"
+      ]
+    },
+    "confidence": {
+      "type": "string"
+    },
+    "evidence": {
+      "type": "array"
+    },
+    "status": {
+      "enum": [
+        "draft",
+        "in_review",
+        "approved",
+        "superseded"
+      ]
+    },
+    "owner": {
+      "type": "string"
+    },
+    "reviewed_by": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "review_rounds": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "approved_at": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object"
+        }
+      ]
+    },
+    "approved_by": {
+      "enum": [
+        "human",
+        "gate-hook",
+        "reviewer"
+      ]
+    },
+    "inputs": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "object"
+          }
+        ]
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "object"
+          }
+        ]
+      }
+    },
+    "external_refs": {
+      "type": "object"
+    },
+    "summary": {
+      "type": "string",
+      "pattern": "^\\s*\\S+(\\s+\\S+){0,149}\\s*$"
+    },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "text"
+        ]
+      }
+    },
+    "open_questions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "text"
+        ]
+      }
+    },
+    "data": {
+      "type": "object",
+      "properties": {
+        "problem": {
+          "type": "string"
+        },
+        "target_segments": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "size_estimate": {
+                "type": "number"
+              },
+              "evidence": {
+                "enum": [
+                  "research",
+                  "hypothesis"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "evidence"
+            ]
+          }
+        },
+        "personas": {
+          "type": "string"
+        },
+        "value_proposition": {
+          "type": "string"
+        },
+        "competitors": {
+          "type": "array",
+          "minItems": 3,
+          "items": {
+            "type": "object",
+            "required": [
+              "name",
+              "gap"
+            ]
+          }
+        },
+        "business_model": {
+          "type": "object",
+          "required": [
+            "revenue_streams"
+          ]
+        },
+        "unit_economics": {
+          "type": "object"
+        },
+        "north_star": {
+          "type": "string"
+        },
+        "kpis": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 5,
+          "items": {
+            "type": "object",
+            "required": [
+              "name",
+              "target",
+              "measure"
+            ]
+          }
+        },
+        "mvp_hypotheses": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "minProperties": 1,
+            "propertyNames": {
+              "pattern": "^H[0-9]+$"
+            }
+          }
+        },
+        "top_risks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "recommendation": {
+          "enum": [
+            "go",
+            "no-go",
+            "pivot"
+          ]
+        },
+        "client_approval": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "enum": [
+                "pending",
+                "changes_requested",
+                "approved",
+                "rejected"
+              ]
+            },
+            "artifact": {
+              "type": "string"
+            },
+            "revision": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "client": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "object"
+                }
+              ]
+            },
+            "method": {
+              "type": "string"
+            },
+            "recorded_by": {
+              "type": "string"
+            },
+            "recorded_at": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "object"
+                }
+              ]
+            },
+            "record": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "status"
+          ],
+          "if": {
+            "properties": {
+              "status": {
+                "const": "approved"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "required": [
+              "artifact",
+              "revision",
+              "client",
+              "method",
+              "recorded_by",
+              "recorded_at",
+              "record"
+            ]
+          }
+        },
+        "decision": {
+          "type": "object",
+          "properties": {
+            "by": {
+              "const": "human"
+            },
+            "value": {
+              "enum": [
+                "go",
+                "no-go",
+                "pivot"
+              ]
+            },
+            "date": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "object"
+                }
+              ]
+            }
+          },
+          "required": [
+            "by",
+            "value",
+            "date"
+          ]
+        }
+      },
+      "required": [
+        "problem",
+        "target_segments",
+        "value_proposition",
+        "competitors",
+        "business_model",
+        "north_star",
+        "kpis",
+        "mvp_hypotheses",
+        "top_risks",
+        "recommendation"
+      ]
+    }
+  },
+  "required": [
+    "phase",
+    "kind",
+    "revision",
+    "status",
+    "owner",
+    "summary",
+    "increment",
+    "product_version",
+    "provenance",
+    "data"
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "provenance": {
+            "not": {
+              "const": "produced"
+            }
+          }
+        },
+        "required": [
+          "provenance"
+        ]
+      },
+      "then": {
+        "required": [
+          "confidence",
+          "evidence"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "approved"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "required": [
+          "approved_at",
+          "approved_by"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "approved"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "data": {
+            "type": "object",
+            "required": [
+              "client_approval",
+              "decision"
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

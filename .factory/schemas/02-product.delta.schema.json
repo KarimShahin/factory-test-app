@@ -1,0 +1,234 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "factory/02-product.delta.schema.json",
+  "title": "02-product handoff (delta)",
+  "type": "object",
+  "properties": {
+    "phase": {
+      "const": "02-product"
+    },
+    "kind": {
+      "const": "delta"
+    },
+    "increment": {
+      "type": "string"
+    },
+    "product_version": {
+      "type": "string"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "provenance": {
+      "enum": [
+        "produced",
+        "reconstructed",
+        "reconciled"
+      ]
+    },
+    "confidence": {
+      "type": "string"
+    },
+    "evidence": {
+      "type": "array"
+    },
+    "status": {
+      "enum": [
+        "draft",
+        "in_review",
+        "approved",
+        "superseded"
+      ]
+    },
+    "owner": {
+      "type": "string"
+    },
+    "reviewed_by": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "review_rounds": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "approved_at": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object"
+        }
+      ]
+    },
+    "approved_by": {
+      "enum": [
+        "human",
+        "gate-hook",
+        "reviewer"
+      ]
+    },
+    "inputs": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "object"
+          }
+        ]
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "object"
+          }
+        ]
+      }
+    },
+    "external_refs": {
+      "type": "object"
+    },
+    "summary": {
+      "type": "string",
+      "pattern": "^\\s*\\S+(\\s+\\S+){0,149}\\s*$"
+    },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "text"
+        ]
+      }
+    },
+    "open_questions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "text"
+        ]
+      }
+    },
+    "base": {
+      "type": "object",
+      "properties": {
+        "file": {
+          "type": "string"
+        },
+        "baseline_of": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "file",
+        "baseline_of"
+      ]
+    },
+    "changes": {
+      "type": "object",
+      "properties": {
+        "added": {
+          "type": "object"
+        },
+        "changed": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "before",
+                "after",
+                "reason"
+              ]
+            }
+          }
+        },
+        "removed": {
+          "oneOf": [
+            {
+              "type": "array"
+            },
+            {
+              "type": "object"
+            }
+          ]
+        },
+        "unchanged_note": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "added",
+        "changed",
+        "removed"
+      ]
+    }
+  },
+  "required": [
+    "phase",
+    "kind",
+    "revision",
+    "status",
+    "owner",
+    "summary",
+    "increment",
+    "base",
+    "changes"
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "provenance": {
+            "not": {
+              "const": "produced"
+            }
+          }
+        },
+        "required": [
+          "provenance"
+        ]
+      },
+      "then": {
+        "required": [
+          "confidence",
+          "evidence"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "approved"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "required": [
+          "approved_at",
+          "approved_by"
+        ]
+      }
+    }
+  ]
+}

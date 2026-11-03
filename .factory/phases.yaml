@@ -1,0 +1,52 @@
+# Phase registry. Source: docs/12-communication-and-handoffs.md, section 5.5.
+# Hooks, schemas and every document use these IDs.
+# Schemas are listed by name; only schemas that exist in factory/schemas/ are checked by validate-handoff.sh.
+phases:
+  - id: 00-intake
+    handoffs: [00-intake.yaml]
+    schemas: [00-intake.full]
+    owner: project-assessor
+  - id: 01-business
+    handoffs: [01-business.yaml]
+    schemas: [01-business.full, 01-business.delta]
+    owner: business-agent
+  - id: 02-product
+    handoffs: [02-product.yaml]
+    schemas: [02-product.full, 02-product.delta]
+    owner: pm-agent
+  - id: 03-plan
+    handoffs: [03-plan.yaml]
+    schemas: [03-plan.full, 03-plan.delta]
+    owner: pm-agent
+  - id: 04-design
+    handoffs: [04-design-system.yaml, "04-design-sprint-<n>.yaml"]
+    schemas: [04-design.full, 04-design.delta]
+    owner: design-agent
+  - id: 05-architecture
+    handoffs: [05-architecture.yaml]
+    schemas: [05-architecture.full, 05-architecture.delta]
+    owner: tech-lead
+  - id: 06-setup
+    handoffs: [06-setup.yaml]
+    schemas: [06-setup.full, 06-setup.delta]
+    owner: devops-agent
+  - id: 07-development
+    handoffs: ["07-sprint-<n>.yaml", "tickets/<KEY>.yaml"]
+    schemas: [07-development.full, 07-ticket]
+    owner: [fe-agent, be-agent]
+  - id: 08-qa
+    handoffs: ["08-qa-<sprint or rc>.yaml"]
+    schemas: [08-qa.full]
+    owner: qa-agent
+  - id: 09-release
+    handoffs: [09-release.yaml]
+    schemas: [09-release.full]
+    owner: pm-agent
+  - id: 10-deploy
+    handoffs: [10-deploy.yaml]
+    schemas: [10-deploy.full]
+    owner: devops-agent
+  - id: 11-post-launch
+    handoffs: ["11-cycle-<n>.yaml"]
+    schemas: [11-post-launch.full]
+    owner: pm-agent
