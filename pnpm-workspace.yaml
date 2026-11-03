@@ -1,0 +1,8 @@
+packages:
+  - apps/*
+  - packages/*
+blockExoticSubdeps: true
+minimumReleaseAge: 10080
+ignoredBuiltDependencies:
+  - sharp
+  - unrs-resolver

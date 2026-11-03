@@ -1,0 +1,11 @@
+{
+  "name": "ai-factory-project-template",
+  "private": true,
+  "packageManager": "pnpm@10.34.9",
+  "scripts": {
+    "lint": "pnpm --filter web lint",
+    "typecheck": "pnpm --filter web typecheck",
+    "test": "pnpm --filter web test",
+    "build": "pnpm --filter web build"
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "agent": "factory-orchestrator",
+  "env": {
+    "CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH": "2",
+    "CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS": "4"
+  },
+  "permissions": {
+    "deny": [
+      "Read(./.env*)",
+      "Bash(git push --force*)",
+      "Bash(git push -f*)",
+      "Bash(rm -rf *)",
+      "Bash(vercel * --prod*)",
+      "Bash(vercel promote *)",
+      "Bash(vercel rollback *)",
+      "Bash(vercel rolling-release *)",
+      "Bash(curl *api.vercel.com*)",
+      "Bash(git push * production*)",
+      "Bash(gh pr merge * --base production*)",
+      "mcp__vercel__request_promote",
+      "mcp__vercel__request_rollback",
+      "mcp__vercel__start_rolling_release",
+      "mcp__vercel__complete_rolling_release",
+      "mcp__vercel__approve_rolling_release_stage",
+      "mcp__vercel__assign_alias"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/check-state.sh" },
+          { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/report-event.sh template factory.example.com" }
+        ]
+      },
+      {
+        "matcher": "compact",
+        "hooks": [
+          { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/reinject-state.sh" }
+        ]
+      }
+    ],
+    "Notification": [
+      { "matcher": "permission_prompt", "hooks": [ { "type": "http", "url": "https://factory.example.com/api/hooks/claude", "headers": { "X-Factory-Project": "template" } } ] },
+      { "matcher": "idle_prompt", "hooks": [ { "type": "http", "url": "https://factory.example.com/api/hooks/claude", "headers": { "X-Factory-Project": "template" } } ] }
+    ],
+    "SubagentStop": [
+      { "hooks": [
+        { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/validate-handoff.sh" },
+        { "type": "http", "url": "https://factory.example.com/api/hooks/claude", "headers": { "X-Factory-Project": "template" } }
+      ] }
+    ],
+    "Stop": [
+      { "hooks": [ { "type": "http", "url": "https://factory.example.com/api/hooks/claude", "headers": { "X-Factory-Project": "template" } } ] }
+    ],
+    "StopFailure": [
+      { "hooks": [ { "type": "http", "url": "https://factory.example.com/api/hooks/claude", "headers": { "X-Factory-Project": "template" } } ] }
+    ],
+    "PreToolUse": [
+      { "matcher": "Write|Edit", "hooks": [ { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/block-secrets.sh" } ] }
+    ]
+  }
+}

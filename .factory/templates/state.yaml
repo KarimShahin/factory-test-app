@@ -1,0 +1,11 @@
+# .factory/state.yaml
+product: ""
+profile: []
+factory_scope: everything          # everything | labelled_tickets_only | read_only
+baseline_of: ""                    # last released version merged into .factory/baseline/
+active_increments: []
+release_queue: []
+rollout_in_progress: null          # null when no rollout runs
+open_questions: []
+last_drift_check: null
+last_updated: null
