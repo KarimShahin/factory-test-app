@@ -1,0 +1,323 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "factory/02-product.full.schema.json",
+  "title": "02-product handoff (full)",
+  "type": "object",
+  "properties": {
+    "phase": {
+      "const": "02-product"
+    },
+    "kind": {
+      "const": "full"
+    },
+    "increment": {
+      "type": "string"
+    },
+    "product_version": {
+      "type": "string"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "provenance": {
+      "enum": [
+        "produced",
+        "reconstructed",
+        "reconciled"
+      ]
+    },
+    "confidence": {
+      "type": "string"
+    },
+    "evidence": {
+      "type": "array"
+    },
+    "status": {
+      "enum": [
+        "draft",
+        "in_review",
+        "approved",
+        "superseded"
+      ]
+    },
+    "owner": {
+      "type": "string"
+    },
+    "reviewed_by": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "review_rounds": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "approved_at": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object"
+        }
+      ]
+    },
+    "approved_by": {
+      "enum": [
+        "human",
+        "gate-hook",
+        "reviewer"
+      ]
+    },
+    "inputs": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "object"
+          }
+        ]
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "object"
+          }
+        ]
+      }
+    },
+    "external_refs": {
+      "type": "object"
+    },
+    "summary": {
+      "type": "string",
+      "pattern": "^\\s*\\S+(\\s+\\S+){0,149}\\s*$"
+    },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "text"
+        ]
+      }
+    },
+    "open_questions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "text"
+        ]
+      }
+    },
+    "data": {
+      "type": "object",
+      "properties": {
+        "vision": {
+          "type": "string"
+        },
+        "prd": {
+          "type": "string"
+        },
+        "mvp_scope": {
+          "type": "object",
+          "properties": {
+            "must": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "should": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "wont": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "must",
+            "should",
+            "wont"
+          ]
+        },
+        "epics": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "jira_key": {
+                "type": "string"
+              },
+              "stories_file": {
+                "type": "string"
+              },
+              "story_count": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "kpis": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "id",
+              "jira_key",
+              "stories_file",
+              "story_count"
+            ]
+          }
+        },
+        "nfr": {
+          "type": "string"
+        },
+        "performance_budgets": {
+          "type": "object"
+        },
+        "localization": {
+          "type": "object"
+        },
+        "analytics_plan": {
+          "type": "string"
+        },
+        "traceability": {
+          "type": "string"
+        },
+        "scope_signoff": {
+          "type": "object",
+          "properties": {
+            "by": {
+              "const": "human"
+            },
+            "date": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "object"
+                }
+              ]
+            }
+          },
+          "required": [
+            "by",
+            "date"
+          ]
+        }
+      },
+      "required": [
+        "vision",
+        "prd",
+        "mvp_scope",
+        "epics",
+        "nfr",
+        "performance_budgets",
+        "localization",
+        "analytics_plan",
+        "traceability"
+      ]
+    }
+  },
+  "required": [
+    "phase",
+    "kind",
+    "revision",
+    "status",
+    "owner",
+    "summary",
+    "increment",
+    "product_version",
+    "provenance",
+    "data"
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "provenance": {
+            "not": {
+              "const": "produced"
+            }
+          }
+        },
+        "required": [
+          "provenance"
+        ]
+      },
+      "then": {
+        "required": [
+          "confidence",
+          "evidence"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "approved"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "required": [
+          "approved_at",
+          "approved_by"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "approved"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "data": {
+            "type": "object",
+            "required": [
+              "scope_signoff"
+            ]
+          }
+        }
+      }
+    }
+  ]
+}
